@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: datadog-private-location-worker
+    namespace: default
+spec:
+    selector:
+        matchLabels:
+            app: private-location
+    template:
+        metadata:
+            name: datadog-private-location-worker
+            labels:
+                app: private-location
+        spec:
+            containers:
+                - name: datadog-private-location-worker
+                  image: gcr.io/datadoghq/synthetics-private-location-worker
+                  volumeMounts:
+                      - mountPath: /etc/datadog/synthetics-check-runner.json
+                        name: worker-config
+                        subPath: worker-config-local-macbook-59bf75bc6deecf65e9f98b1242a75d5e.json
+            volumes:
+                - name: worker-config
+                  secret:
+                      secretName: private-location-worker-config
